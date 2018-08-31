@@ -16,12 +16,14 @@ defmodule Casey do
     :world
   end
 
-  def all_caps input, mode do
-    String.upcase(input, mode)
+  def all_caps input do
+    String.upcase(input)
+    |> String.upcase(:greek)
   end
 
-  def all_lower input, mode do
-    String.downcase(input, mode)
+  def all_lower input do
+    String.downcase(input)
+    |> String.downcase(:greek)
   end
 
   def cap_words input do

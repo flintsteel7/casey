@@ -7,11 +7,11 @@ defmodule CaseyTest do
   end
 
   test "capitalizes every letter" do
-    assert Casey.all_caps("Upper case all the things!", :default) == "UPPER CASE ALL THE THINGS!"
+    assert Casey.all_caps("Upper case all the things!") == "UPPER CASE ALL THE THINGS!"
   end
 
   test "lower-cases every letter" do
-    assert Casey.all_lower("Bring it all Down, Boys!", :default) == "bring it all down, boys!"
+    assert Casey.all_lower("Bring it all Down, Boys!") == "bring it all down, boys!"
   end
 
   test "capitalize every word" do

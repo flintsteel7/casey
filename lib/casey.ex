@@ -27,7 +27,7 @@ defmodule Casey do
   def cap_words input do
     # preserve whitespace to add back on later
     [_, leading, trailing] = Regex.run(~r/^(\s*)\S.*?\S(\s*)$/, input)
-    String.split(input)
+    String.split(input, ~r/\S.*?\s*/)
     |> Enum.map(fn word ->
       String.capitalize(word, :greek)
     end)

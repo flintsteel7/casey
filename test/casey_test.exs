@@ -26,6 +26,14 @@ defmodule CaseyTest do
     assert Casey.cap_words("I'd like all these words to be capitalized, please.") == "I'd Like All These Words To Be Capitalized, Please."
   end
 
+  test "capitalize every word, preserving leading and trailing whitespace" do
+    assert Casey.cap_words(" I'd like all these words to be capitalized, please.\\n") == " I'd Like All These Words To Be Capitalized, Please.\\n"
+  end
+
+  test "capitalize every word across new lines" do
+    assert Casey.cap_words(" I'd like all these words\\nto be capitalized, please. ") == " I'd Like All These Words\\nTo Be Capitalized, Please. "
+  end
+
   test "capitalize each sentence" do
     assert Casey.cap_sentences("here is Red. Red is a dog. see Red run. go Red, go!") == "Here is Red. Red is a dog. See Red run. Go Red, go!"
   end

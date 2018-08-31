@@ -25,18 +25,22 @@ defmodule Casey do
   end
 
   def cap_words input do
-    # preserve whitespace to add back on later
-    [_, leading, trailing] = Regex.run(~r/^(\s*)\S.*?\S(\s*)$/, input)
-    String.split(input, ~r/\S.*?\s*/)
-    |> Enum.map(fn word ->
-      String.capitalize(word, :greek)
+    last_grapheme = ""
+    input
+    |> String.graphemes()
+    |> Enum.map(fn grapheme ->
+      last_grapheme = grapheme
+      new_grapheme = with true <- Regex.match?(~r/^\S$/, grapheme),
+           true <- Regex.match?(~r/^\s$/, last_grapheme)
+      do
+        String.upcase(grapheme)
+      else
+        _ ->
+          grapheme
+      end
+      new_grapheme
     end)
-    |> Enum.join(" ")
-    |> reassemble_strings(leading, trailing)
-  end
-
-  defp reassemble_strings(middle, leading, trailing) do
-    leading <> middle <> trailing
+    |> Enum.join()
   end
 
   def cap_sentences input do

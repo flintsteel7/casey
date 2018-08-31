@@ -25,7 +25,18 @@ defmodule Casey do
   end
 
   def cap_words input do
-    input
+    # preserve whitespace to add back on later
+    [_, leading, trailing] = Regex.run(~r/^(\s*)\S.*?\S(\s*)$/, input)
+    String.split(input)
+    |> Enum.map(fn word ->
+      String.capitalize(word, :greek)
+    end)
+    |> Enum.join(" ")
+    |> reassemble_strings(leading, trailing)
+  end
+
+  defp reassemble_strings(middle, leading, trailing) do
+    leading <> middle <> trailing
   end
 
   def cap_sentences input do

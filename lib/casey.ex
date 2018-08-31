@@ -17,13 +17,11 @@ defmodule Casey do
   end
 
   def all_caps input do
-    String.upcase(input)
-    |> String.upcase(:greek)
+    String.upcase(input, :greek)
   end
 
   def all_lower input do
-    String.downcase(input)
-    |> String.downcase(:greek)
+    String.downcase(input, :greek)
   end
 
   def cap_words input do

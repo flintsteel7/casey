@@ -10,8 +10,16 @@ defmodule CaseyTest do
     assert Casey.all_caps("Upper case all the things!") == "UPPER CASE ALL THE THINGS!"
   end
 
+  test "capitalizes Greek final sigma correctly" do
+    assert Casey.all_caps("σς and σς") == "ΣΣ AND ΣΣ"
+  end
+
   test "lower-cases every letter" do
     assert Casey.all_lower("Bring it all Down, Boys!") == "bring it all down, boys!"
+  end
+
+  test "lower-cases Greek final sigma correctly" do
+    assert Casey.all_lower("ΣΣ And ΣΣ") == "σς and σς"
   end
 
   test "capitalize every word" do

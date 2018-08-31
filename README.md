@@ -1,8 +1,10 @@
 # Casey
 
-**An Elixir string case converter**
+**A unicode string case converter that handles HTML**
 
-Converts input string capitalization. The options are:
+*Written in Elixir*
+
+Converts capitalization of an input unicode string, including the inner text of an HTML string or document. Available conversions are:
 - all uppercase
 - all lowercase
 - title case

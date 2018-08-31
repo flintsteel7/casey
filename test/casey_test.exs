@@ -23,33 +23,37 @@ defmodule CaseyTest do
   end
 
   test "capitalize every word" do
-    assert Casey.cap_words("I'd like all these words to be capitalized, please.") == "I'd Like All These Words To Be Capitalized, Please."
+    assert Casey.cap_words("i'd like all these words to be capitalized, please.") ==
+             "I'd Like All These Words To Be Capitalized, Please."
   end
 
   test "capitalize every word, preserving leading and trailing whitespace" do
-    assert Casey.cap_words(" I'd like all these words to be capitalized, please.\\n") == " I'd Like All These Words To Be Capitalized, Please.\\n"
+    assert Casey.cap_words(" i'd like all these words to be capitalized, please.\n") ==
+             " I'd Like All These Words To Be Capitalized, Please.\n"
   end
 
   test "capitalize every word across new lines" do
-    assert Casey.cap_words(" I'd like all these words\\nto be capitalized, please. ") == " I'd Like All These Words\\nTo Be Capitalized, Please. "
+    assert Casey.cap_words("\n i'd like all these words\nto be capitalized, please. ") ==
+             "\n I'd Like All These Words\nTo Be Capitalized, Please. "
   end
 
   test "capitalize each sentence" do
-    assert Casey.cap_sentences("here is Red. Red is a dog. see Red run. go Red, go!") == "Here is Red. Red is a dog. See Red run. Go Red, go!"
+    assert Casey.cap_sentences("\nhere is Red. Red is a dog.\nsee Red run. go Red, go!") ==
+             "\nHere is Red. Red is a dog.\nSee Red run. Go Red, go!"
   end
 
   test "capitalize each line" do
     assert Casey.cap_lines("""
-let each of these lines
-come back capitalized
-or something isn't working
-correctly
-""") == """
-Let each of these lines
-Come back capitalized
-Or something isn't working
-Correctly
-"""
+            let each of these lines
+           come back capitalized
+            or something isn't working
+           correctly
+           """) == """
+            Let each of these lines
+           Come back capitalized
+            Or something isn't working
+           Correctly
+           """
   end
 
   test "properly capitalize title" do

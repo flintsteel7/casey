@@ -1,6 +1,6 @@
 # Casey
 
-**A unicode string case converter that handles HTML**
+**A Unicode string case converter that handles HTML**
 
 *Written in Elixir*
 

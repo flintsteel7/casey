@@ -23,11 +23,14 @@ defmodule Casey.MixProject do
     [
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
+      {:html_entities, "~> 0.4.0"}
     ]
   end
 
   def defaults do
     %{
+      # it looks like a space, but it's actually a non-breaking space
+      whitespace: ["\\s"],
       lower: %{
         articles: ["a", "an", "the"],
         conjunctions: ["and", "but", "or", "yet", "for", "nor", "so"],

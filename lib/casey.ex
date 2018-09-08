@@ -65,35 +65,10 @@ defmodule Casey do
   If you wanted to capitalize every character following a "p", "f", or "z" for instance, you could pass in `["p", "f", "z"]` as `whitespace`
   """
 
-  def cap_words(input, whitespace \\ @defaults.whitespace) do
-    # TODO refactor to return {:ok, result} or {:error, error}
-
-    whitespace_regex = Enum.join(whitespace, "|") |> Regex.compile!("u")
-
-    {capitalized_list, _} =
-      input
-      |> cap_first_non_whitespace()
-      |> String.graphemes()
-      |> Enum.map_reduce([], fn grapheme, acc ->
-        previous_grapheme =
-          case Enum.at(acc, -1) do
-            nil -> ""
-            lg -> lg
-          end
-
-        new_grapheme =
-          with true <- Regex.match?(~r/\S/u, grapheme),
-               true <- Regex.match?(whitespace_regex, previous_grapheme) do
-            String.upcase(grapheme)
-          else
-            _ ->
-              grapheme
-          end
-
-        {new_grapheme, acc ++ [new_grapheme]}
-      end)
-
-    Enum.join(capitalized_list)
+  def cap_words(input, opts \\ []) do
+    aft = Keyword.get(opts, :whitespace, @defaults.whitespace)
+    cap_first = Keyword.get(opts, :cap_first, @defaults.cap_first)
+    cap_after(input, after: aft, cap_first: cap_first)
   end
 
   @doc """
@@ -102,7 +77,10 @@ defmodule Casey do
   ## Behavior:
   """
 
-  def cap_sentences(input) do
+  def cap_sentences(input, opts \\ []) do
+    aft = Keyword.get(opts, :sentence_end, @defaults.sentence_end)
+    cap_first = Keyword.get(opts, :cap_first, @defaults.cap_first)
+    cap_after(input, after: aft, cap_first: cap_first)
   end
 
   def cap_lines(input) do
@@ -113,15 +91,76 @@ defmodule Casey do
     input
   end
 
-  defp cap_first_non_whitespace(input) do
+  defp cap_after(input, opts \\ []) do
+    aft = Keyword.get(opts, :after)
+    cap_first = Keyword.get(opts, :cap_first, @defaults.cap_first)
+
+    case list_to_opposite_regexes(aft) do
+      {:ok, positive_regex, negative_regex} ->
+        {capitalized_list, _} =
+          input
+          |> maybe_cap_first_non_whitespace(cap_first)
+          |> String.graphemes()
+          |> Enum.map_reduce([], fn grapheme, acc ->
+            previous_grapheme =
+              case Enum.at(acc, -1) do
+                nil -> ""
+                lg -> lg
+              end
+
+            new_grapheme =
+              with true <- Regex.match?(negative_regex, grapheme),
+                   true <- Regex.match?(positive_regex, previous_grapheme) do
+                String.upcase(grapheme)
+              else
+                _ ->
+                  grapheme
+              end
+
+            {new_grapheme, acc ++ [new_grapheme]}
+          end)
+
+        {:ok, Enum.join(capitalized_list)}
+
+      error ->
+        error
+    end
+  end
+
+  defp maybe_cap_first_non_whitespace(input, false), do: input
+
+  defp maybe_cap_first_non_whitespace(input, true) do
     [_, head, body] = Regex.run(~r/^(\s*)(\S(?:.|\s)*)/u, input)
     cap_first = String.first(body) |> String.upcase()
     head <> cap_first <> String.slice(body, 1, String.length(body))
   end
 
-  defp list_to_regex(list) do
-    case Enum.join(whitespace, "|") |> Regex.compile!("u") do
-      {:ok, regex} -> regex
+  defp list_to_opposite_regexes(character_list) do
+    with {:ok, positive_regex} <- list_to_positive_regex(character_list),
+         {:ok, negative_regex} <- list_to_negative_regex(character_list) do
+      {:ok, positive_regex, negative_regex}
+    else
+      error -> error
+    end
+  end
+
+  defp list_to_positive_regex(character_list) do
+    case Enum.join(character_list, "|") |> Regex.compile("u") do
+      {:ok, regex} -> {:ok, regex}
+      error -> error
+    end
+  end
+
+  defp list_to_negative_regex(character_list) do
+    case Enum.join(character_list, "") |> create_negative_regex_group() do
+      {:ok, regex} -> {:ok, regex}
+      error -> error
+    end
+  end
+
+  defp create_negative_regex_group(character_string) do
+    case ("[^" <> character_string <> "]") |> Regex.compile("u") do
+      {:ok, regex} -> {:ok, regex}
       error -> error
     end
   end

@@ -24,17 +24,17 @@ defmodule CaseyTest do
 
   test "capitalize every word" do
     assert Casey.cap_words("i'd like all these words to be capitalized, please.") ==
-             "I'd Like All These Words To Be Capitalized, Please."
+             {:ok, "I'd Like All These Words To Be Capitalized, Please."}
   end
 
   test "capitalize every word, preserving leading and trailing whitespace" do
     assert Casey.cap_words(" i'd like all these words to be capitalized, please.\n") ==
-             " I'd Like All These Words To Be Capitalized, Please.\n"
+             {:ok, " I'd Like All These Words To Be Capitalized, Please.\n"}
   end
 
   test "capitalize every word across new lines" do
     assert Casey.cap_words("\n i'd like all these words\nto be capitalized, please. ") ==
-             "\n I'd Like All These Words\nTo Be Capitalized, Please. "
+             {:ok, "\n I'd Like All These Words\nTo Be Capitalized, Please. "}
   end
 
   test "capitalize every word, what is whitespace?" do
@@ -60,39 +60,42 @@ defmodule CaseyTest do
            \tcharacter tab
            \vline tab
            \fform feed
-           """) == """
-           \bbackspace
-           \u200bzero-width Space
-            Space
-           \u00a0Non-breaking Space
-           \u202fNarrow Non-breaking Space
-           \u2002En Space
-           \u2003Em Space
-           \u2004Three-per-em Space
-           \u2005Four-per-em Space
-           \u2006Six-per-em Space
-           \u2007Figure Space
-           \u2008Punctuation Space
-           \u2009Thin Space
-           \u200aHair Space
-           \u205fMedium Mathematical Space
-           \rCarriage Return
-           \nLine Feed
-           \r\nCrlf
-           \tCharacter Tab
-           \vLine Tab
-           \fForm Feed
-           """
+           """) ==
+             {:ok,
+              """
+              \bbackspace
+              \u200bzero-width Space
+               Space
+              \u00a0Non-breaking Space
+              \u202fNarrow Non-breaking Space
+              \u2002En Space
+              \u2003Em Space
+              \u2004Three-per-em Space
+              \u2005Four-per-em Space
+              \u2006Six-per-em Space
+              \u2007Figure Space
+              \u2008Punctuation Space
+              \u2009Thin Space
+              \u200aHair Space
+              \u205fMedium Mathematical Space
+              \rCarriage Return
+              \nLine Feed
+              \r\nCrlf
+              \tCharacter Tab
+              \vLine Tab
+              \fForm Feed
+              """}
   end
 
   test "capitalize every word, only following spaces" do
-    assert Casey.cap_words("i'd like\u00a0all these words\u00a0to be\tcapitalized, please.", [" "]) ==
-             "I'd Like\u00a0all These Words\u00a0to Be\tcapitalized, Please."
+    assert Casey.cap_words("i'd like\u00a0all these words\u00a0to be\tcapitalized, please.",
+             whitespace: [" "]
+           ) == {:ok, "I'd Like\u00a0all These Words\u00a0to Be\tcapitalized, Please."}
   end
 
   test "capitalize each sentence" do
     assert Casey.cap_sentences("\nhere is Red. Red is a dog.\nsee Red run. go Red, go!") ==
-             "\nHere is Red. Red is a dog.\nSee Red run. Go Red, go!"
+             {:ok, "\nHere is Red. Red is a dog.\nSee Red run. Go Red, go!"}
   end
 
   test "capitalize each line" do

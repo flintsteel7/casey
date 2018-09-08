@@ -31,6 +31,9 @@ defmodule Casey.MixProject do
     %{
       # it looks like a space, but it's actually a non-breaking space
       whitespace: ["\\s"],
+      sentence_end: [".", "!", "."],
+      line_end: ["\\r\\n", "\\r", "\\n"],
+      cap_first: true,
       lower: %{
         articles: ["a", "an", "the"],
         conjunctions: ["and", "but", "or", "yet", "for", "nor", "so"],

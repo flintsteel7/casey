@@ -104,12 +104,14 @@ defmodule CaseyTest do
            come back capitalized
             or something isn't working
            correctly
-           """) == """
-            Let each of these lines
-           Come back capitalized
-            Or something isn't working
-           Correctly
-           """
+           """) ==
+             {:ok,
+              """
+               Let each of these lines
+              Come back capitalized
+               Or something isn't working
+              Correctly
+              """}
   end
 
   test "properly capitalize title" do

@@ -29,10 +29,9 @@ defmodule Casey.MixProject do
 
   def defaults do
     %{
-      # it looks like a space, but it's actually a non-breaking space
-      whitespace: ["\\s"],
-      sentence_end: [".", "!", "."],
-      line_end: ["\\r\\n", "\\r", "\\n"],
+      whitespace: [~r/\s/],
+      sentence_end: [".", "!", "?"],
+      line_end: [~r/\r\n/, ~r/\r/, ~r/\n/],
       cap_first: true,
       lower: %{
         articles: ["a", "an", "the"],

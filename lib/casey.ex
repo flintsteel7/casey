@@ -83,8 +83,10 @@ defmodule Casey do
     cap_after(input, after: aft, cap_first: cap_first)
   end
 
-  def cap_lines(input) do
-    input
+  def cap_lines(input, opts \\ []) do
+    aft = Keyword.get(opts, :line_end, @defaults.line_end)
+    cap_first = Keyword.get(opts, :cap_first, @defaults.cap_first)
+    cap_after(input, after: aft, cap_first: cap_first)
   end
 
   def title_case(input) do
@@ -102,15 +104,11 @@ defmodule Casey do
           |> maybe_cap_first_non_whitespace(cap_first)
           |> String.graphemes()
           |> Enum.map_reduce([], fn grapheme, acc ->
-            previous_grapheme =
-              case Enum.at(acc, -1) do
-                nil -> ""
-                lg -> lg
-              end
+            string_up_to_grapheme = Enum.join(acc, "")
 
             new_grapheme =
               with true <- Regex.match?(negative_regex, grapheme),
-                   true <- Regex.match?(positive_regex, previous_grapheme) do
+                   true <- Regex.match?(positive_regex, string_up_to_grapheme) do
                 String.upcase(grapheme)
               else
                 _ ->
@@ -135,7 +133,20 @@ defmodule Casey do
     head <> cap_first <> String.slice(body, 1, String.length(body))
   end
 
-  defp list_to_opposite_regexes(character_list) do
+  defp mixed_regex_string_list_to_string_list(input_list) do
+    Enum.map(
+      input_list,
+      &if Regex.regex?(&1) do
+        Regex.source(&1)
+      else
+        Regex.escape(&1)
+      end
+    )
+  end
+
+  defp list_to_opposite_regexes(input_list) do
+    character_list = mixed_regex_string_list_to_string_list(input_list)
+
     with {:ok, positive_regex} <- list_to_positive_regex(character_list),
          {:ok, negative_regex} <- list_to_negative_regex(character_list) do
       {:ok, positive_regex, negative_regex}
@@ -145,7 +156,14 @@ defmodule Casey do
   end
 
   defp list_to_positive_regex(character_list) do
-    case Enum.join(character_list, "|") |> Regex.compile("u") do
+    case Enum.join(character_list, "|") |> regex_at_end() do
+      {:ok, regex} -> {:ok, regex}
+      error -> error
+    end
+  end
+
+  defp regex_at_end(character_string) do
+    case ("(?:" <> character_string <> ")$") |> Regex.compile("u") do
       {:ok, regex} -> {:ok, regex}
       error -> error
     end

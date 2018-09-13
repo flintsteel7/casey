@@ -94,8 +94,8 @@ defmodule CaseyTest do
   end
 
   test "capitalize each sentence" do
-    assert Casey.cap_sentences("\nhere is Red. Red is a dog.\nsee Red run. go Red, go!") ==
-             {:ok, "\nHere is Red. Red is a dog.\nSee Red run. Go Red, go!"}
+    assert Casey.cap_sentences("\nhere is Red. red is a dog.\n  see Red run? go Red, go!\n   and don't come back!") ==
+             {:ok, "\nHere is Red. Red is a dog.\n  See Red run? Go Red, go!\n   And don't come back!"}
   end
 
   test "capitalize each line" do

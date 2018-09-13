@@ -79,6 +79,8 @@ defmodule Casey do
 
   def cap_sentences(input, opts \\ []) do
     aft = Keyword.get(opts, :sentence_end, @defaults.sentence_end)
+      |> mixed_regex_string_list_to_string_list()
+      |> add_whitespace_after_regexes()
     cap_first = Keyword.get(opts, :cap_first, @defaults.cap_first)
     cap_after(input, after: aft, cap_first: cap_first)
   end
@@ -141,6 +143,14 @@ defmodule Casey do
       else
         Regex.escape(&1)
       end
+    )
+  end
+
+  defp add_whitespace_after_regexes(input_list) do
+    Enum.map(
+      input_list,
+      # TODO add error handling here: use compile instead of compile!
+      &(Regex.compile!(&1 <> "\\s*", "u"))
     )
   end
 

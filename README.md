@@ -2,6 +2,8 @@
 
 **A Unicode string case converter that handles HTML**
 
+***NOTE: This is a work in progress, not all features are working as intended or at all***
+
 *Written in Elixir*
 
 Converts capitalization of an input unicode string, including the inner text of an HTML string or document. Available conversions are:
